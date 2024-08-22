@@ -6,7 +6,7 @@ import HistoricoAcoes from './HistoricoAcoes';
 
 const ResumoEvento = ({
   historicoVendas,
-  faturamentoTotal,
+  faturamentoTotal = 0, // Valor padrão para evitar 'undefined'
   exportarCSV,
   limparDadosPersistidos,
   produtos,
@@ -117,7 +117,7 @@ const ResumoEvento = ({
       <div className="flex items-center justify-end mt-4">
         <span className="font-medium text-gray-700 mr-2">Faturamento:</span>
         <span className="bg-green-100 px-3 py-1 rounded-lg font-bold text-green-800">
-          R$ {faturamentoTotal.toFixed(2)}
+          R$ {parseFloat(faturamentoTotal).toFixed(2)}
         </span>
       </div>
 

@@ -16,6 +16,7 @@ const CaixaPage = () => {
   const [numeroPedido, setNumeroPedido] = useState(1);
   const [historicoVendas, setHistoricoVendas] = useState({});
   const { sendMessage } = useWebSocket('ws://seu-endereco-websocket');
+  const [faturamentoTotal, setFaturamentoTotal] = useState(0);
 
   useEffect(() => {
     // Carregar produtos e opcionais
@@ -49,7 +50,14 @@ const CaixaPage = () => {
     // Salvar número do pedido e histórico de vendas no localStorage
     localStorage.setItem('numeroPedido', numeroPedido.toString());
     localStorage.setItem('historicoVendas', JSON.stringify(historicoVendas));
-  }, [numeroPedido, historicoVendas]);
+
+    // Atualizar o faturamento total
+    const total = Object.values(carrinho).reduce(
+      (sum, item) => sum + item.preco * item.qtd,
+      0
+    );
+    setFaturamentoTotal(total);
+  }, [numeroPedido, historicoVendas, carrinho]);
 
   const adicionarAoCarrinho = (produto, opcionaisSelecionados) => {
     const chaveProduto = `${produto.id}-${opcionaisSelecionados.join('-')}`;
@@ -180,7 +188,11 @@ const CaixaPage = () => {
         />
       )}
 
-      <ResumoEvento historicoVendas={historicoVendas} produtos={produtos} />
+      <ResumoEvento
+        historicoVendas={historicoVendas}
+        produtos={produtos}
+        faturamentoTotal={faturamentoTotal} // Passa o faturamento total
+      />
     </div>
   );
 };
