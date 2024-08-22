@@ -82,15 +82,19 @@ const CaixaPage = () => {
       const novoCarrinho = { ...prevCarrinho };
       const item = novoCarrinho[chave];
       if (item) {
-        item.qtd = Math.max(0, item.qtd + delta);
-        if (item.qtd === 0) {
+        const novaQuantidade = Math.max(0, item.qtd + delta);
+        if (novaQuantidade === 0) {
           delete novoCarrinho[chave];
+        } else {
+          novoCarrinho[chave] = {
+            ...item,
+            qtd: novaQuantidade
+          };
         }
       }
       return novoCarrinho;
     });
   };
-
 
   const removerItem = (chave) => {
     setCarrinho((prevCarrinho) => {
@@ -153,16 +157,21 @@ const CaixaPage = () => {
     }
   };
 
-  const atualizarOpcionais = (chaveAntiga, produto, novosOpcionais) => {
+  const atualizarOpcionais = (produtoId, novosOpcionais) => {
     setCarrinho((prevCarrinho) => {
       const novoCarrinho = { ...prevCarrinho };
-      delete novoCarrinho[chaveAntiga];
-      const novaChave = `${produto.id}-${novosOpcionais.sort().join('-')}`;
-      novoCarrinho[novaChave] = {
-        ...produto,
-        opcionais: novosOpcionais,
-        qtd: prevCarrinho[chaveAntiga].qtd,
-      };
+      const chaveAntiga = Object.keys(novoCarrinho).find(
+        (chave) => chave.startsWith(produtoId.toString())
+      );
+      if (chaveAntiga) {
+        const itemAntigo = novoCarrinho[chaveAntiga];
+        const novaChave = `${produtoId}-${novosOpcionais.sort().join('-')}`;
+        delete novoCarrinho[chaveAntiga];
+        novoCarrinho[novaChave] = {
+          ...itemAntigo,
+          opcionais: novosOpcionais
+        };
+      }
       return novoCarrinho;
     });
   };
@@ -205,7 +214,7 @@ const CaixaPage = () => {
           opcionais={opcionais}
           adicionarAoCarrinho={adicionarAoCarrinho}
           fecharModal={() => setMostrarModal(false)}
-          opcionaisSelecionados={carrinho[produtoSelecionado.id]?.opcionais || []}
+          opcionaisSelecionados={carrinho[`${produtoSelecionado.id}`]?.opcionais || []}
         />
       )}
 
