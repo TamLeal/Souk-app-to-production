@@ -157,21 +157,39 @@ const CaixaPage = () => {
     }
   };
 
-  const atualizarOpcionais = (produtoId, novosOpcionais) => {
+  const atualizarOpcionais = (produtoId, novosOpcionais, chaveEditada) => {
     setCarrinho((prevCarrinho) => {
       const novoCarrinho = { ...prevCarrinho };
-      const chaveAntiga = Object.keys(novoCarrinho).find(
-        (chave) => chave.startsWith(produtoId.toString())
-      );
-      if (chaveAntiga) {
-        const itemAntigo = novoCarrinho[chaveAntiga];
-        const novaChave = `${produtoId}-${novosOpcionais.sort().join('-')}`;
-        delete novoCarrinho[chaveAntiga];
-        novoCarrinho[novaChave] = {
-          ...itemAntigo,
-          opcionais: novosOpcionais
-        };
+      const novaChave = `${produtoId}-${novosOpcionais.sort().join('-')}`;
+      
+      // Encontra o item que está sendo editado
+      const itemEditado = novoCarrinho[chaveEditada];
+      
+      if (itemEditado) {
+        // Remove o item editado do carrinho
+        delete novoCarrinho[chaveEditada];
+        
+        // Verifica se já existe um item com os mesmos novos opcionais
+        const itemExistente = Object.entries(novoCarrinho).find(
+          ([chave, item]) => chave === novaChave && chave !== chaveEditada
+        );
+  
+        if (itemExistente) {
+          // Se existe, combina os itens
+          const [chaveExistente, itemExistenteValor] = itemExistente;
+          novoCarrinho[chaveExistente] = {
+            ...itemExistenteValor,
+            qtd: itemExistenteValor.qtd + itemEditado.qtd
+          };
+        } else {
+          // Se não existe, cria um novo item com os novos opcionais
+          novoCarrinho[novaChave] = {
+            ...itemEditado,
+            opcionais: novosOpcionais
+          };
+        }
       }
+      
       return novoCarrinho;
     });
   };
