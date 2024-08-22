@@ -72,6 +72,11 @@ const CaixaPage = () => {
     setMostrarModal(false);
   };
 
+  const abrirModal = (produto) => {
+    setProdutoSelecionado(produto);
+    setMostrarModal(true);
+  };
+
   const editarQuantidade = (chave, delta) => {
     setCarrinho((prevCarrinho) => {
       const novoCarrinho = { ...prevCarrinho };
@@ -158,10 +163,8 @@ const CaixaPage = () => {
           <Produto
             key={produto.id}
             produto={produto}
-            adicionarAoCarrinho={() => {
-              setProdutoSelecionado(produto);
-              setMostrarModal(true);
-            }}
+            adicionarAoCarrinho={adicionarAoCarrinho}
+            abrirModal={abrirModal}
           />
         ))}
       </div>

@@ -37,7 +37,7 @@ const Produto = ({ produto, adicionarAoCarrinho, abrirModal }) => {
       </p>
       <button
         onClick={(e) => {
-          e.stopPropagation();
+          e.stopPropagation();  // Previne o clique de propagar para o card
           abrirModal(produto);
         }}
         className="mt-3 p-2 bg-white text-gray-800 rounded-lg hover:bg-gray-100 transition-all duration-300"
