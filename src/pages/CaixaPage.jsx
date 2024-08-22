@@ -60,7 +60,7 @@ const CaixaPage = () => {
   }, [numeroPedido, historicoVendas, carrinho]);
 
   const adicionarAoCarrinho = (produto, opcionaisSelecionados) => {
-    const chaveProduto = `${produto.id}-${opcionaisSelecionados.join('-')}`;
+    const chaveProduto = `${produto.id}-${opcionaisSelecionados.sort().join('-')}`;
     setCarrinho((prevCarrinho) => ({
       ...prevCarrinho,
       [chaveProduto]: {
@@ -90,6 +90,7 @@ const CaixaPage = () => {
       return novoCarrinho;
     });
   };
+
 
   const removerItem = (chave) => {
     setCarrinho((prevCarrinho) => {
@@ -152,6 +153,20 @@ const CaixaPage = () => {
     }
   };
 
+  const atualizarOpcionais = (chaveAntiga, produto, novosOpcionais) => {
+    setCarrinho((prevCarrinho) => {
+      const novoCarrinho = { ...prevCarrinho };
+      delete novoCarrinho[chaveAntiga];
+      const novaChave = `${produto.id}-${novosOpcionais.sort().join('-')}`;
+      novoCarrinho[novaChave] = {
+        ...produto,
+        opcionais: novosOpcionais,
+        qtd: prevCarrinho[chaveAntiga].qtd,
+      };
+      return novoCarrinho;
+    });
+  };
+
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <h1 className="text-4xl font-bold mb-10 text-center text-gray-800">
@@ -180,6 +195,8 @@ const CaixaPage = () => {
         calcularTotal={calcularTotal}
         enviarParaProducao={enviarParaProducao}
         apagarPedido={apagarPedido}
+        atualizarOpcionais={atualizarOpcionais}
+        opcionais={opcionais}
       />
 
       {mostrarModal && (
@@ -188,13 +205,14 @@ const CaixaPage = () => {
           opcionais={opcionais}
           adicionarAoCarrinho={adicionarAoCarrinho}
           fecharModal={() => setMostrarModal(false)}
+          opcionaisSelecionados={carrinho[produtoSelecionado.id]?.opcionais || []}
         />
       )}
 
       <ResumoEvento
         historicoVendas={historicoVendas}
         produtos={produtos}
-        faturamentoTotal={faturamentoTotal} // Passa o faturamento total
+        faturamentoTotal={faturamentoTotal}
       />
     </div>
   );

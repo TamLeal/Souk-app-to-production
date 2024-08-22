@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Opcionais = ({
   produtoSelecionado,
   opcionais,
   adicionarAoCarrinho,
   fecharModal,
+  opcionaisSelecionados,
 }) => {
-  const [opcionaisSelecionados, setOpcionaisSelecionados] = React.useState([]);
+  const [selectedOpcionais, setSelectedOpcionais] = useState(opcionaisSelecionados);
+
+  useEffect(() => {
+    setSelectedOpcionais(opcionaisSelecionados);
+  }, [opcionaisSelecionados]);
 
   const handleToggleOpcional = (opcional) => {
-    setOpcionaisSelecionados((prev) =>
+    setSelectedOpcionais((prev) =>
       prev.includes(opcional)
         ? prev.filter((item) => item !== opcional)
         : [...prev, opcional]
@@ -17,7 +22,7 @@ const Opcionais = ({
   };
 
   const handleConfirmar = () => {
-    adicionarAoCarrinho(produtoSelecionado, opcionaisSelecionados);
+    adicionarAoCarrinho(produtoSelecionado, selectedOpcionais);
     fecharModal();
   };
 
@@ -32,7 +37,7 @@ const Opcionais = ({
             <label className="flex items-center">
               <input
                 type="checkbox"
-                checked={opcionaisSelecionados.includes(opcional.nome)}
+                checked={selectedOpcionais.includes(opcional.nome)}
                 onChange={() => handleToggleOpcional(opcional.nome)}
                 className="mr-2"
               />
