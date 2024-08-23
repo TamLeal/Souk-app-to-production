@@ -24,10 +24,6 @@ const ControleExpedicao = () => {
     const savedHistoricoVendas = localStorage.getItem('historicoVendas');
     return savedHistoricoVendas ? JSON.parse(savedHistoricoVendas) : {};
   });
-  const [mostrarResumo, setMostrarResumo] = useState(false);
-  const [senha, setSenha] = useState('');
-  const [senhaCorreta, setSenhaCorreta] = useState(false);
-  const [mostrarInputSenha, setMostrarInputSenha] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('filaPedidos', JSON.stringify(filaPedidos));
@@ -88,77 +84,21 @@ const ControleExpedicao = () => {
     }
   };
 
-  const handleSenhaSubmit = (e) => {
-    e.preventDefault();
-    if (senha === 'lec123') {
-      setSenhaCorreta(true);
-      setMostrarResumo(true);
-    } else {
-      alert('Senha incorreta!');
-    }
-  };
-
-  const handleToggleResumo = () => {
-    if (mostrarResumo) {
-      setSenhaCorreta(false);
-      setMostrarResumo(false);
-      setMostrarInputSenha(false);
-      setSenha('');
-    } else {
-      setMostrarInputSenha(!mostrarInputSenha);
-    }
-  };
-
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-xl font-bold">Fila de Pedidos</h2>
         <FilaPedidos filaPedidos={filaPedidos} setFilaPedidos={setFilaPedidos} />
       </div>
 
       <div className="mb-6">
-        <h2 className="text-xl font-bold">Pedidos em Espera</h2>
         <PedidosOnHold pedidosOnHold={pedidosOnHold} setPedidosOnHold={setPedidosOnHold} />
       </div>
 
       <div className="mb-6">
-        <h2 className="text-xl font-bold">Pedidos Esquecidos</h2>
         <Esquecidos esquecidos={esquecidos} setEsquecidos={setEsquecidos} />
       </div>
 
-      <div className="mt-8">
-        <button onClick={handleToggleResumo}>
-          {mostrarResumo ? 'Esconder Resumo' : 'Mostrar Resumo'}
-        </button>
-
-        {mostrarInputSenha && (
-          <form onSubmit={handleSenhaSubmit} className="mt-4">
-            <input
-              type="password"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-              placeholder="Digite a senha"
-              className="p-2 border rounded"
-            />
-            <button type="submit" className="p-2 ml-2 bg-blue-500 text-white rounded">
-              Confirmar
-            </button>
-          </form>
-        )}
-
-        {mostrarResumo && senhaCorreta && (
-          <ResumoEvento
-            historicoVendas={historicoVendas}
-            faturamentoTotal={faturamentoTotal}
-            exportarCSV={exportarCSV}
-            limparDadosPersistidos={limparDadosPersistidos}
-            produtos={produtos}
-            historicoAcoes={[]}
-            mostrarHistorico={false}
-            setMostrarHistorico={() => {}}
-          />
-        )}
-      </div>
+      {/* Botão "Mostrar Resumo" e lógica associada removidos */}
     </div>
   );
 };
