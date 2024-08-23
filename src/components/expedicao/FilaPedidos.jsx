@@ -1,13 +1,31 @@
 import React from 'react';
 import { ArrowUp, ArrowDown, Pause, Check } from 'lucide-react'; // Ícones mais leves da V1
 import { GiHamburger } from 'react-icons/gi';
-import { ChefHat } from 'lucide-react'; // Importando o ícone de chapéu de cozinha
+import { ChefHat } from 'lucide-react'; // Ícone de chapéu de cozinha
+import { FaHamburger } from 'react-icons/fa';
+import { PiHamburgerFill } from 'react-icons/pi';
+import { CiFries } from 'react-icons/ci';
+
+const getItemIcon = (nome) => {
+  switch (nome.toLowerCase()) {
+    case 'kft':
+      return <GiHamburger className="inline-block mr-2" />;
+    case 'falafel':
+      return <FaHamburger className="inline-block mr-2" />;
+    case 'marys':
+      return <PiHamburgerFill className="inline-block mr-2" />;
+    case 'fritas':
+      return <CiFries className="inline-block mr-2" />;
+    default:
+      return null;
+  }
+};
 
 const FilaPedidos = ({ filaPedidos, moverPedido, togglePedidoOnHold, removerPedido }) => {
   return (
     <div>
       <div className="flex items-center mb-6">
-        <ChefHat className="mr-2" size={24} /> {/* Ícone de chapéu de cozinha */}
+        <ChefHat className="mr-2" size={24} />
         <h2 className="text-xl font-bold text-gray-800">Fila de Pedidos</h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -15,10 +33,7 @@ const FilaPedidos = ({ filaPedidos, moverPedido, togglePedidoOnHold, removerPedi
           <p className="text-gray-700">Nenhum pedido na fila.</p>
         ) : (
           filaPedidos.map((pedido) => (
-            <div
-              key={pedido.id}
-              className="bg-white shadow-lg rounded-lg overflow-hidden"
-            >
+            <div key={pedido.id} className="bg-white shadow-lg rounded-lg overflow-hidden">
               <div className="flex items-center justify-between p-4 bg-blue-500 text-white">
                 <div className="flex items-center">
                   <h3 className="text-lg font-semibold">{pedido.cliente} #{pedido.id}</h3>
@@ -64,8 +79,17 @@ const FilaPedidos = ({ filaPedidos, moverPedido, togglePedidoOnHold, removerPedi
               <div className="p-4">
                 <ul>
                   {Object.entries(pedido.itens).map(([key, item]) => (
-                    <li key={key} className="text-gray-800">
-                      <GiHamburger className="inline-block mr-2" /> {item.nome} x {item.qtd}
+                    <li key={key} className="text-gray-800 flex flex-col">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          {getItemIcon(item.nome)} {item.nome} x {item.qtd}
+                        </div>
+                        {item.opcionais && item.opcionais.length > 0 && (
+                          <span className="text-sm text-gray-600 ml-4">
+                            Opcionais: {item.opcionais.join(', ')}
+                          </span>
+                        )}
+                      </div>
                     </li>
                   ))}
                 </ul>
