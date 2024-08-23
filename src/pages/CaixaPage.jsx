@@ -129,6 +129,10 @@ const CaixaPage = () => {
     // Enviar pedido via WebSocket
     sendMessage({ type: 'novoPedido', pedido: novoPedido });
 
+    // Armazenar pedido no localStorage para a Expedição
+    const pedidosExpedicao = JSON.parse(localStorage.getItem('filaPedidos')) || [];
+    localStorage.setItem('filaPedidos', JSON.stringify([...pedidosExpedicao, novoPedido]));
+
     // Atualizar histórico de vendas
     setHistoricoVendas((prevHistorico) => {
       const novoHistorico = { ...prevHistorico };
