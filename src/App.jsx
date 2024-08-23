@@ -1,19 +1,22 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import InitialScreen from './components/InitialScreen';
+import { Provider } from 'react-redux';
+import store from './store';
+import InitialScreen from './components/shared/InitialScreen';
 import CaixaPage from './pages/CaixaPage';
-// import ExpedicaoPage from './pages/ExpedicaoPage'; // Comentamos esta linha
+import ExpedicaoPage from './pages/ExpedicaoPage';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<InitialScreen />} />
-        <Route path="/caixa" element={<CaixaPage />} />
-        {/* Comentamos a rota de Expedição por enquanto */}
-        {/* <Route path="/expedicao" element={<ExpedicaoPage />} /> */}
-      </Routes>
-    </Router>
+    <Provider store={store}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<InitialScreen />} />
+          <Route path="/caixa" element={<CaixaPage />} />
+          <Route path="/expedicao" element={<ExpedicaoPage />} />
+        </Routes>
+      </Router>
+    </Provider>
   );
 }
 

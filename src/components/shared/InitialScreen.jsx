@@ -14,14 +14,12 @@ const InitialScreen = () => {
         >
           Caixa
         </button>
-        {/* Comentamos ou desativamos o botão de Expedição */}
-        {/* <button
+        <button
           onClick={() => navigate('/expedicao')}
-          className="w-64 p-4 bg-gray-400 text-white rounded-lg cursor-not-allowed"
-          disabled
+          className="w-64 p-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
         >
-          Expedição (Em desenvolvimento)
-        </button> */}
+          Expedição
+        </button>
       </div>
     </div>
   );
