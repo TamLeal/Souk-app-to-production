@@ -23,18 +23,18 @@ const getItemIcon = (nome) => {
 
 const FilaPedidos = ({ filaPedidos, moverPedido, togglePedidoOnHold, removerPedido }) => {
   return (
-    <div>
+    <div className="bg-white p-6 rounded-lg shadow-md mb-8">
       <div className="flex items-center mb-6">
         <ChefHat className="mr-2" size={24} />
         <h2 className="text-xl font-bold text-gray-800">Fila de Pedidos</h2>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="flex space-x-4 overflow-x-auto">
         {filaPedidos.length === 0 ? (
           <p className="text-gray-700">Nenhum pedido na fila.</p>
         ) : (
           filaPedidos.map((pedido) => (
-            <div key={pedido.id} className="bg-white shadow-lg rounded-lg overflow-hidden">
-              <div className="flex items-center justify-between p-4 bg-blue-500 text-white">
+            <div key={pedido.id} className="bg-white shadow-lg rounded-lg overflow-hidden min-w-[250px]">
+              <div className="flex items-center justify-between p-4 bg-gray-800 text-white">
                 <div className="flex items-center">
                   <h3 className="text-lg font-semibold">{pedido.cliente} #{pedido.id}</h3>
                   <span className="ml-2 text-sm text-gray-200">

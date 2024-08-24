@@ -1,8 +1,7 @@
+// src/components/expedicao/ControleExpedicao.jsx
+
 import React, { useState, useEffect } from 'react';
 import FilaPedidos from './FilaPedidos';
-import PedidosOnHold from './PedidosOnHold';
-import Esquecidos from './Esquecidos';
-import ResumoEvento from '../shared/ResumoEvento';
 import Papa from 'papaparse';
 import { saveAs } from 'file-saver';
 
@@ -18,8 +17,6 @@ const ControleExpedicao = () => {
     const savedFilaPedidos = localStorage.getItem('filaPedidos');
     return savedFilaPedidos ? JSON.parse(savedFilaPedidos) : [];
   });
-  const [pedidosOnHold, setPedidosOnHold] = useState([]);
-  const [esquecidos, setEsquecidos] = useState([]);
   const [historicoVendas, setHistoricoVendas] = useState(() => {
     const savedHistoricoVendas = localStorage.getItem('historicoVendas');
     return savedHistoricoVendas ? JSON.parse(savedHistoricoVendas) : {};
@@ -89,16 +86,8 @@ const ControleExpedicao = () => {
       <div className="mb-6">
         <FilaPedidos filaPedidos={filaPedidos} setFilaPedidos={setFilaPedidos} />
       </div>
-
-      <div className="mb-6">
-        <PedidosOnHold pedidosOnHold={pedidosOnHold} setPedidosOnHold={setPedidosOnHold} />
-      </div>
-
-      <div className="mb-6">
-        <Esquecidos esquecidos={esquecidos} setEsquecidos={setEsquecidos} />
-      </div>
-
-      {/* Botão "Mostrar Resumo" e lógica associada removidos */}
+      
+      {/* PedidosOnHold e Esquecidos foram removidos daqui */}
     </div>
   );
 };
