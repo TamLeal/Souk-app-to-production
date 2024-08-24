@@ -78,8 +78,8 @@ const FilaPedidos = ({ filaPedidos, moverPedido, togglePedidoOnHold, removerPedi
               </div>
               <div className="p-4">
                 <ul>
-                  {Object.entries(pedido.itens).map(([key, item]) => (
-                    <li key={key} className="text-gray-800 flex flex-col">
+                  {Object.entries(pedido.itens).map(([key, item], index) => (
+                    <li key={`${pedido.id}-${key}`} className="text-gray-800 flex flex-col">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
                           {getItemIcon(item.nome)} {item.nome} x {item.qtd}

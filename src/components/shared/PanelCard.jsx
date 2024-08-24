@@ -1,32 +1,40 @@
 import React from 'react';
+import { FaHamburger } from 'react-icons/fa';
+import { PiHamburgerFill } from 'react-icons/pi';
+import { CiFries } from 'react-icons/ci';
 
-const PanelCard = ({ icon, label, value, items, color }) => {
-  // Mapeamento das cores para classes Tailwind
-  const colorClasses = {
-    red: 'bg-red-100',
-    blue: 'bg-blue-100',
-    green: 'bg-green-100',
-    yellow: 'bg-yellow-100',
-    // Adicione mais cores conforme necessário
-  };
+const getItemIcon = (name) => {
+  switch (name.toLowerCase()) {
+    case 'kft':
+      return <FaHamburger className="mr-1" />;
+    case 'falafel':
+      return <PiHamburgerFill className="mr-1" />;
+    case 'marys':
+      return <FaHamburger className="mr-1" />;
+    case 'fritas':
+      return <CiFries className="mr-1" />;
+    default:
+      return null;
+  }
+};
 
+const PanelCard = ({ icon, label, value, items = [], color }) => {
   return (
-    <div className={`p-4 ${colorClasses[color] || 'bg-gray-100'} rounded-lg shadow-md`}>
-      <div className="flex items-center">
+    <div className={`p-4 bg-${color}-100 rounded-lg shadow-md hover:bg-${color}-200 transition-all duration-300`}>
+      <div className="flex items-center justify-center mb-2">
         {icon}
-        <div className="ml-4">
-          <h4 className="text-lg font-semibold">{label}</h4>
-          <p className="text-2xl">{value}</p>
-        </div>
+        <span className="ml-2 text-lg font-semibold text-gray-800">{label}</span>
       </div>
-      {items && (
-        <ul className="mt-2">
+      <div className="text-3xl font-bold text-center text-gray-800">{value}</div>
+      {items.length > 0 && (
+        <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-1 text-xs sm:text-sm text-gray-700">
           {items.map((item, index) => (
-            <li key={index} className="text-sm">
-              {item.icon} {item.name}: {item.quantity}
-            </li>
+            <div key={index} className="flex items-center">
+              {getItemIcon(item.name)}
+              <span>{item.name}: {item.quantity}</span>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
