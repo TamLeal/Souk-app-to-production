@@ -21,51 +21,54 @@ const PainelProducao = ({ filaPedidos }) => {
   }, [filaPedidos]);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mt-6">
-      <PanelCard
-        icon={<ChefHat size={24} />}
-        label="Total de Itens"
-        value={Object.values(contadorFila).reduce((total, qtd) => total + qtd, 0)}
-        items={Object.entries(contadorFila).map(([name, quantity]) => ({
-          icon: name === 'KFT' ? <FaHamburger /> : name === 'Fritas' ? <CiFries /> : null,
-          name,
-          quantity,
-        }))}
-        color="blue"
-      />
+    <div className="bg-white shadow-lg rounded-lg p-6 mb-8"> {/* Container Principal */}
+      <h2 className="text-2xl font-bold mb-4 text-left">Painel de Produção</h2> {/* Título */}
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <PanelCard
+          icon={<ChefHat size={24} />}
+          label="Total de Itens"
+          value={Object.values(contadorFila).reduce((total, qtd) => total + qtd, 0)}
+          items={Object.entries(contadorFila).map(([name, quantity]) => ({
+            icon: name === 'KFT' ? <FaHamburger /> : name === 'Fritas' ? <CiFries /> : null,
+            name,
+            quantity,
+          }))}
+          color="blue"
+        />
 
-      <PanelCard
-        icon={<AlertTriangle size={24} />}
-        label="Pedidos Prioritários"
-        value={filaPedidos.filter((p) => p.prioritario).length}
-        color="red"
-      />
+        <PanelCard
+          icon={<AlertTriangle size={24} />}
+          label="Pedidos Prioritários"
+          value={filaPedidos.filter((p) => p.prioritario).length}
+          color="red"
+        />
 
-      <PanelCard
-        icon={<Clock size={24} />}
-        label="Tempo Médio na Fila"
-        value={
-          filaPedidos.length > 0
-            ? `${Math.round(
-                filaPedidos.reduce(
-                  (total, pedido) =>
-                    total +
-                    (new Date().getTime() - new Date(pedido.horario).getTime()) /
-                      60000,
-                  0
-                ) / filaPedidos.length
-              )} min`
-            : '0 min'
-        }
-        color="green"
-      />
+        <PanelCard
+          icon={<Clock size={24} />}
+          label="Tempo Médio na Fila"
+          value={
+            filaPedidos.length > 0
+              ? `${Math.round(
+                  filaPedidos.reduce(
+                    (total, pedido) =>
+                      total +
+                      (new Date().getTime() - new Date(pedido.horario).getTime()) /
+                        60000,
+                    0
+                  ) / filaPedidos.length
+                )} min`
+              : '0 min'
+          }
+          color="green"
+        />
 
-      <PanelCard
-        icon={<User size={24} />}
-        label="Pessoas na Fila"
-        value={filaPedidos.length}
-        color="yellow"
-      />
+        <PanelCard
+          icon={<User size={24} />}
+          label="Pessoas na Fila"
+          value={filaPedidos.length}
+          color="yellow"
+        />
+      </div>
     </div>
   );
 };
