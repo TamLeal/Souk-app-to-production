@@ -1,7 +1,6 @@
 import React from 'react';
-import { ArrowUp, ArrowDown, Pause, Check } from 'lucide-react'; // Ícones mais leves da V1
+import { ArrowUp, ArrowDown, Pause, Check, ChefHat } from 'lucide-react'; 
 import { GiHamburger } from 'react-icons/gi';
-import { ChefHat } from 'lucide-react'; // Ícone de chapéu de cozinha
 import { FaHamburger } from 'react-icons/fa';
 import { PiHamburgerFill } from 'react-icons/pi';
 import { CiFries } from 'react-icons/ci';
@@ -34,46 +33,50 @@ const FilaPedidos = ({ filaPedidos, moverPedido, togglePedidoOnHold, removerPedi
         ) : (
           filaPedidos.map((pedido) => (
             <div key={pedido.id} className="bg-white shadow-lg rounded-lg overflow-hidden min-w-[250px]">
-              <div className="flex items-center justify-between p-4 bg-gray-800 text-white">
-                <div className="flex items-center">
-                  <h3 className="text-lg font-semibold">{pedido.cliente} #{pedido.id}</h3>
-                  <span className="ml-2 text-sm text-gray-200">
-                    {new Date(pedido.horario).toLocaleTimeString()}
-                  </span>
-                </div>
-                <div className="flex space-x-2">
-                  <button className="p-1.5 bg-gray-100 rounded-full hover:bg-gray-200">
-                    <ArrowUp
-                      className="text-gray-700"
-                      size={18}
-                      title="Priorizar Pedido"
-                      onClick={() => moverPedido(pedido.id, 'up')}
-                    />
-                  </button>
-                  <button className="p-1.5 bg-gray-100 rounded-full hover:bg-gray-200">
-                    <ArrowDown
-                      className="text-gray-700"
-                      size={18}
-                      title="Despriorizar Pedido"
-                      onClick={() => moverPedido(pedido.id, 'down')}
-                    />
-                  </button>
-                  <button className="p-1.5 bg-gray-100 rounded-full hover:bg-gray-200">
-                    <Pause
-                      className="text-gray-700"
-                      size={18}
-                      title="Colocar em Espera"
-                      onClick={() => togglePedidoOnHold(pedido.id)}
-                    />
-                  </button>
-                  <button className="p-1.5 bg-green-500 text-white rounded-full hover:bg-green-600">
-                    <Check
-                      className="text-white"
-                      size={18}
-                      title="Concluir Pedido"
-                      onClick={() => removerPedido(pedido.id)}
-                    />
-                  </button>
+              <div className="p-4 bg-gray-800 text-white">
+                <div className="flex flex-col justify-between min-w-0">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-semibold">
+                      {pedido.cliente} #{pedido.id}
+                    </h3>
+                    <span className="text-sm text-gray-200 whitespace-nowrap">
+                      {new Date(pedido.horario).toLocaleTimeString()}
+                    </span>
+                  </div>
+                  <div className="flex justify-end space-x-2 mt-2">
+                    <button className="p-1.5 bg-gray-100 rounded-full hover:bg-gray-200">
+                      <ArrowUp
+                        className="text-gray-700"
+                        size={18}
+                        title="Priorizar Pedido"
+                        onClick={() => moverPedido(pedido.id, 'up')}
+                      />
+                    </button>
+                    <button className="p-1.5 bg-gray-100 rounded-full hover:bg-gray-200">
+                      <ArrowDown
+                        className="text-gray-700"
+                        size={18}
+                        title="Despriorizar Pedido"
+                        onClick={() => moverPedido(pedido.id, 'down')}
+                      />
+                    </button>
+                    <button className="p-1.5 bg-gray-100 rounded-full hover:bg-gray-200">
+                      <Pause
+                        className="text-gray-700"
+                        size={18}
+                        title="Colocar em Espera"
+                        onClick={() => togglePedidoOnHold(pedido.id)}
+                      />
+                    </button>
+                    <button className="p-1.5 bg-green-500 text-white rounded-full hover:bg-green-600">
+                      <Check
+                        className="text-white"
+                        size={18}
+                        title="Concluir Pedido"
+                        onClick={() => removerPedido(pedido.id)}
+                      />
+                    </button>
+                  </div>
                 </div>
               </div>
               <div className="p-4">
