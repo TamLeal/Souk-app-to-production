@@ -4,6 +4,7 @@ import Produto from '../components/caixa/Produto';
 import Opcionais from '../components/caixa/Opcionais';
 import ResumoEvento from '../components/shared/ResumoEvento';
 import { useWebSocket } from '../hooks/useWebSocket';
+import { Settings } from 'lucide-react';
 
 const CaixaPage = () => {
   const [carrinho, setCarrinho] = useState({});
@@ -18,8 +19,11 @@ const CaixaPage = () => {
   const { sendMessage } = useWebSocket('ws://seu-endereco-websocket');
   const [faturamentoTotal, setFaturamentoTotal] = useState(0);
 
+  const [mostrarInputSenha, setMostrarInputSenha] = useState(false);
+  const [senha, setSenha] = useState('');
+  const [senhaCorreta, setSenhaCorreta] = useState(false);
+
   useEffect(() => {
-    // Carregar produtos e opcionais
     setProdutos([
       { id: 1, nome: 'KFT', preco: 15, cor: 'bg-red-200' },
       { id: 2, nome: 'Falafel', preco: 12, cor: 'bg-yellow-200' },
@@ -34,7 +38,6 @@ const CaixaPage = () => {
       { id: 4, nome: 'Duplo burger' },
     ]);
 
-    // Carregar número do pedido e histórico de vendas do localStorage
     const savedNumeroPedido = localStorage.getItem('numeroPedido');
     if (savedNumeroPedido) {
       setNumeroPedido(parseInt(savedNumeroPedido, 10));
@@ -44,20 +47,39 @@ const CaixaPage = () => {
     if (savedHistoricoVendas) {
       setHistoricoVendas(JSON.parse(savedHistoricoVendas));
     }
+
+    const savedFaturamentoTotal = localStorage.getItem('faturamentoTotal');
+    if (savedFaturamentoTotal) {
+      setFaturamentoTotal(parseFloat(savedFaturamentoTotal));
+    }
   }, []);
 
   useEffect(() => {
-    // Salvar número do pedido e histórico de vendas no localStorage
     localStorage.setItem('numeroPedido', numeroPedido.toString());
     localStorage.setItem('historicoVendas', JSON.stringify(historicoVendas));
+    localStorage.setItem('faturamentoTotal', faturamentoTotal.toFixed(2));
+  }, [numeroPedido, historicoVendas, faturamentoTotal]);
 
-    // Atualizar o faturamento total
-    const total = Object.values(carrinho).reduce(
-      (sum, item) => sum + item.preco * item.qtd,
-      0
-    );
-    setFaturamentoTotal(total);
-  }, [numeroPedido, historicoVendas, carrinho]);
+  const handleEngrenagemClick = () => {
+    if (senhaCorreta) {
+      // Reinicia a lógica e fecha tudo
+      setSenhaCorreta(false);
+      setMostrarInputSenha(false);
+      setSenha('');
+    } else {
+      setMostrarInputSenha(!mostrarInputSenha);
+    }
+  };
+
+  const handleSenhaSubmit = (e) => {
+    e.preventDefault();
+    if (senha === 'lec123') {
+      setSenhaCorreta(true);
+      setMostrarInputSenha(false);
+    } else {
+      alert('Senha incorreta!');
+    }
+  };
 
   const adicionarAoCarrinho = (produto, opcionaisSelecionados) => {
     const chaveProduto = `${produto.id}-${opcionaisSelecionados.sort().join('-')}`;
@@ -88,7 +110,7 @@ const CaixaPage = () => {
         } else {
           novoCarrinho[chave] = {
             ...item,
-            qtd: novaQuantidade
+            qtd: novaQuantidade,
           };
         }
       }
@@ -117,11 +139,13 @@ const CaixaPage = () => {
       return;
     }
 
+    const totalCarrinho = calcularTotal();
+
     const novoPedido = {
       id: numeroPedido,
       cliente: nomeCliente,
       itens: carrinho,
-      total: calcularTotal(),
+      total: totalCarrinho,
       prioritario: pedidoPrioritario,
       horario: new Date().toISOString(),
     };
@@ -145,6 +169,9 @@ const CaixaPage = () => {
     // Incrementar número do pedido
     setNumeroPedido((prev) => prev + 1);
 
+    // Acumular o valor do carrinho ao faturamento total
+    setFaturamentoTotal((prevTotal) => prevTotal + totalCarrinho);
+
     // Limpar carrinho e informações do cliente
     setCarrinho({});
     setNomeCliente('');
@@ -161,49 +188,94 @@ const CaixaPage = () => {
     }
   };
 
+  const limparDadosPersistidos = () => {
+    if (window.confirm('Tem certeza de que deseja limpar todos os dados?')) {
+      // Limpa o localStorage para os dados de vendas e faturamento
+      localStorage.removeItem('historicoVendas');
+      localStorage.removeItem('faturamentoTotal');
+      localStorage.removeItem('metas');
+      
+      // Reseta os estados locais
+      setHistoricoVendas({});
+      setFaturamentoTotal(0);
+      setMetas({});
+      
+      alert('Dados de vendas e faturamento foram limpos.');
+    }
+  };
+  
+
   const atualizarOpcionais = (produtoId, novosOpcionais, chaveEditada) => {
     setCarrinho((prevCarrinho) => {
       const novoCarrinho = { ...prevCarrinho };
       const novaChave = `${produtoId}-${novosOpcionais.sort().join('-')}`;
-      
-      // Encontra o item que está sendo editado
+
       const itemEditado = novoCarrinho[chaveEditada];
-      
+
       if (itemEditado) {
-        // Remove o item editado do carrinho
         delete novoCarrinho[chaveEditada];
-        
-        // Verifica se já existe um item com os mesmos novos opcionais
+
         const itemExistente = Object.entries(novoCarrinho).find(
           ([chave, item]) => chave === novaChave && chave !== chaveEditada
         );
-  
+
         if (itemExistente) {
-          // Se existe, combina os itens
           const [chaveExistente, itemExistenteValor] = itemExistente;
           novoCarrinho[chaveExistente] = {
             ...itemExistenteValor,
-            qtd: itemExistenteValor.qtd + itemEditado.qtd
+            qtd: itemExistenteValor.qtd + itemEditado.qtd,
           };
         } else {
-          // Se não existe, cria um novo item com os novos opcionais
           novoCarrinho[novaChave] = {
             ...itemEditado,
-            opcionais: novosOpcionais
+            opcionais: novosOpcionais,
           };
         }
       }
-      
+
       return novoCarrinho;
     });
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="p-6 max-w-6xl mx-auto relative">
+      {/* Título centralizado */}
       <h1 className="text-4xl font-bold mb-10 text-center text-gray-800">
         Controle de Caixa
       </h1>
 
+      {/* Engrenagem e campo de senha na mesma linha */}
+      <div className="flex justify-end items-center mb-4" style={{ position: 'relative' }}>
+        {mostrarInputSenha && !senhaCorreta && (
+          <form
+            onSubmit={handleSenhaSubmit}
+            className="flex items-center space-x-2 mr-2"
+            style={{ position: 'absolute', right: '40px' }}
+          >
+            <input
+              type="password"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              className="p-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              placeholder="Digite a senha"
+              style={{ width: '150px' }}
+            />
+            <button
+              type="submit"
+              className="p-2 bg-blue-500 text-white rounded-lg text-sm"
+            >
+              Confirmar
+            </button>
+          </form>
+        )}
+        <Settings
+          className="cursor-pointer"
+          onClick={handleEngrenagemClick}
+          size={24}
+        />
+      </div>
+
+      {/* Painel de Produtos */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-8">
         {produtos.map((produto) => (
           <Produto
@@ -240,11 +312,13 @@ const CaixaPage = () => {
         />
       )}
 
-      <ResumoEvento
-        historicoVendas={historicoVendas}
-        produtos={produtos}
-        faturamentoTotal={faturamentoTotal}
-      />
+      {senhaCorreta && (
+        <ResumoEvento
+          historicoVendas={historicoVendas}
+          produtos={produtos}
+          faturamentoTotal={faturamentoTotal}
+        />
+      )}
     </div>
   );
 };
